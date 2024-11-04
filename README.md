@@ -9,8 +9,8 @@
    - [add_items](#1-add_items)
    - [delete_items](#2-delete_items)
    - [order_total](#3-order_total)
-   - [place_order](#4-place_order)
-   - [review_order](#5-review_order)
+   - [review_order](#4-review_order)
+   - [place_order](#5-place_order)
 5. [Data Structures](#data-structures)
    - [Menu Items](#menu-items)
    - [Orders](#orders)
@@ -55,7 +55,7 @@ The RoomieServe AI system consists of the following key components:
 
 ### 1. `add_items`
 
-- **Description**: Adds items to the customer's order based on the provided SKUs and associates it with their phone number.
+- **Description**: Adds items to the customer's order based on the provided SKUs and associates it with their room number.
 - **Function Name**: `add_items`
 - **Parameters**:
 
@@ -63,9 +63,9 @@ The RoomieServe AI system consists of the following key components:
   {
     "type": "object",
     "properties": {
-      "phone": {
+      "room": {
         "type": "string",
-        "description": "Customer's phone number used as the order key."
+        "description": "Customer's room number used as the order key."
       },
       "skus": {
         "type": "array",
@@ -81,7 +81,7 @@ The RoomieServe AI system consists of the following key components:
         "description": "List of SKU strings to add to the order."
       }
     },
-    "required": ["phone", "skus"]
+    "required": ["room", "skus"]
   }
   ```
 
@@ -89,7 +89,7 @@ The RoomieServe AI system consists of the following key components:
 
 ### 2. `delete_items`
 
-- **Description**: Removes items from the customer's order based on the provided SKUs and phone number.
+- **Description**: Removes items from the customer's order based on the provided SKUs and room number.
 - **Function Name**: `delete_items`
 - **Parameters**:
 
@@ -97,9 +97,9 @@ The RoomieServe AI system consists of the following key components:
   {
     "type": "object",
     "properties": {
-      "phone": {
+      "room": {
         "type": "string",
-        "description": "Customer's phone number used as the order key."
+        "description": "Customer's room number used as the order key."
       },
       "skus": {
         "type": "array",
@@ -110,7 +110,7 @@ The RoomieServe AI system consists of the following key components:
         "description": "List of SKU strings to remove from the order."
       }
     },
-    "required": ["phone", "skus"]
+    "required": ["room", "skus"]
   }
   ```
 
@@ -118,7 +118,7 @@ The RoomieServe AI system consists of the following key components:
 
 ### 3. `order_total`
 
-- **Description**: Provides a summary of the customer's order, including item details and the total price, identified by the customer's phone number.
+- **Description**: Provides a summary of the customer's order, including item details and the total price, identified by the customer's room number.
 - **Function Name**: `order_total`
 - **Parameters**:
 
@@ -126,45 +126,20 @@ The RoomieServe AI system consists of the following key components:
   {
     "type": "object",
     "properties": {
-      "phone": {
+      "room": {
         "type": "string",
-        "description": "Customer's phone number used as the order key."
+        "description": "Customer's room number used as the order key."
       }
     },
-    "required": ["phone"]
+    "required": ["room"]
   }
   ```
 
 - **Returns**: A human-readable string summarizing the order and total price.
 
-### 4. `place_order`
+### 4. `review_order`
 
-- **Description**: Finalizes the customer's order, adds any notes, and confirms the order, identified by the customer's phone number.
-- **Function Name**: `place_order`
-- **Parameters**:
-
-  ```json
-  {
-    "type": "object",
-    "properties": {
-      "phone": {
-        "type": "string",
-        "description": "Customer's phone number used as the order key."
-      },
-      "notes": {
-        "type": "string",
-        "description": "Any additional notes or instructions for the order."
-      }
-    },
-    "required": ["phone"]
-  }
-  ```
-
-- **Returns**: A human-readable string confirming that the order has been placed.
-
-### 5. `review_order`
-
-- **Description**: Provides a detailed review of the customer's current order, including item names, quantities, and individual prices, identified by the customer's phone number.
+- **Description**: Provides a detailed review of the customer's current order, including item names, quantities, and individual prices, identified by the customer's room number.
 - **Function Name**: `review_order`
 - **Parameters**:
 
@@ -172,16 +147,41 @@ The RoomieServe AI system consists of the following key components:
   {
     "type": "object",
     "properties": {
-      "phone": {
+      "room": {
         "type": "string",
-        "description": "Customer's phone number used as the order key."
+        "description": "Customer's room number used as the order key."
       }
     },
-    "required": ["phone"]
+    "required": ["room"]
   }
   ```
 
 - **Returns**: A human-readable string detailing the current items in the order, their quantities, and individual prices.
+
+### 5. `place_order`
+
+- **Description**: Finalizes the customer's order, adds any notes, and confirms the order, identified by the customer's room number.
+- **Function Name**: `place_order`
+- **Parameters**:
+
+  ```json
+  {
+    "type": "object",
+    "properties": {
+      "room": {
+        "type": "string",
+        "description": "Customer's room number used as the order key."
+      },
+      "notes": {
+        "type": "string",
+        "description": "Any additional notes or instructions for the order."
+      }
+    },
+    "required": ["room"]
+  }
+  ```
+
+- **Returns**: A human-readable string confirming that the order has been placed.
 
 ---
 
@@ -213,12 +213,12 @@ menu_items = [
 
 ### Orders
 
-A dictionary to store orders, using the customer's phone number as the key.
+A dictionary to store orders, using the customer's room number as the key.
 
 ```python
 orders = {
     # Example:
-    '+1234567890': {
+    '101': {
         'items': {
             'CFT001': {
                 'item': menu_items[0],
@@ -238,95 +238,92 @@ orders = {
 Below are the mocked-up Python functions that simulate the backend operations using the mock data.
 
 ```python
-from typing import List, Dict
-
-# Mock data for menu items
-menu_items = [
-    # ... (As defined above)
-]
-
 # Initialize orders dictionary
 orders = {}
+
+completed_orders = []
 
 # Helper function to find a menu item by SKU
 def find_menu_item(sku: str):
     for item in menu_items:
         if item['sku'] == sku:
+            logging.debug(f"Found item: {item}")
             return item
     return None
 
-# Function to add items to the order
-def add_items(phone: str, skus: List[str]) -> str:
-    if phone not in orders:
-        orders[phone] = {
-            'items': {},
-            'total_price': 0.0,
-            'notes': ''
-        }
-    order = orders[phone]
-    added_items = []
+@swaig.endpoint(
+    description="Adds items to the customer's order based on the provided SKUs and associates it with their room number.",
+    room=SWAIGArgument(type="string", description="Customer's room number used as the order key.", required=True),
+    skus=SWAIGArgument(type="array", description="List of SKU strings to add to the order.", required=True,
+        items=SWAIGArgumentItems(
+            type="string",
+            enum=[item['sku'] for item in menu_items]
+        )
+    )
+)
+def add_items(room, skus):
+    if room not in orders:
+        orders[room] = {'items': [], 'status': 'pending'}
     for sku in skus:
-        menu_item = find_menu_item(sku)
-        if menu_item:
-            if sku in order['items']:
-                order['items'][sku]['quantity'] += 1
-            else:
-                order['items'][sku] = {
-                    'item': menu_item,
-                    'quantity': 1
-                }
-            order['total_price'] += menu_item['price']
-            added_items.append(menu_item['name'])
-        else:
-            return f"Item with SKU {sku} not found."
-    items_str = ', '.join(added_items)
-    return f"Added to your order: {items_str}."
+        item = find_menu_item(sku)
+        logging.debug(f"Item: {item}")
+        if item:
+            orders[room]['items'].append(item)
+    return f"Items added successfully", {}
 
-# Function to delete items from the order
-def delete_items(phone: str, skus: List[str]) -> str:
-    if phone not in orders:
-        return "You have no existing order."
-    order = orders[phone]
-    removed_items = []
-    for sku in skus:
-        if sku in order['items']:
-            menu_item = order['items'][sku]['item']
-            quantity = order['items'][sku]['quantity']
-            order['total_price'] -= menu_item['price'] * quantity
-            del order['items'][sku]
-            removed_items.append(menu_item['name'])
-        else:
-            return f"Item with SKU {sku} not found in your order."
-    items_str = ', '.join(removed_items)
-    return f"Removed from your order: {items_str}."
+@swaig.endpoint(description="Removes items from the customer's order based on the provided SKUs and room number.",
+                room=SWAIGArgument(type="string", description="Customer's room number used as the order key.", required=True),
+                skus=SWAIGArgument(type="array", description="List of SKU strings to remove from the order.", required=True,
+                    items=SWAIGArgumentItems(
+                        type="string",
+                        enum=[item['sku'] for item in menu_items]
+                    )
+                )
+            )    
+def delete_items(room, skus):
+    if room in orders:
+        orders[room] = [item for item in orders[room] if item['sku'] not in skus]
+        return f"Items removed successfully", {}
+    else:
+        return f"Order not found for the given room number", {}
 
-# Function to get the order total
-def order_total(phone: str) -> str:
-    if phone not in orders or not orders[phone]['items']:
-        return "Your order is empty."
-    order = orders[phone]
-    order_summary = []
-    for details in order['items'].values():
-        item = details['item']
-        quantity = details['quantity']
-        item_total = item['price'] * quantity
-        order_summary.append(f"{quantity} x {item['name']} (${item_total:.2f})")
-    items_str = '; '.join(order_summary)
-    total_price = order['total_price']
-    return f"Your order: {items_str}. Total price: ${total_price:.2f}."
+@swaig.endpoint(description="Provides a summary of the customer's order and total price.",
+                room=SWAIGArgument(type="string", description="Customer's room number used as the order key.", required=True))
+def order_total(room):
+    return f"Order total: {sum(item['price'] for item in orders[room]['items']):.2f}", {}
 
-# Function to place the order
-def place_order(phone: str, notes: str = "") -> str:
-    if phone not in orders or not orders[phone]['items']:
-        return "Your order is empty."
-    order = orders[phone]
-    order['notes'] = notes
-    total_price = order['total_price']
-    # Simulate order placement
-    confirmation_message = f"Your order has been placed. Total: ${total_price:.2f}. {notes}"
-    # Clear the order
-    del orders[phone]
-    return confirmation_message
+@swaig.endpoint(description="Reviews the customer's order and provides the items and their quantities.",
+                room=SWAIGArgument(type="string", description="Customer's room number used as the order key.", required=True))
+def review_order(room):
+    if room in orders:
+        from collections import defaultdict
+        order_summary = defaultdict(int)
+
+        for item in orders[room]['items']:
+            order_summary[item['sku']] += 1
+
+        summary_table = "SKU | Quantity\n"
+        summary_table += "-" * 20 + "\n"
+        for sku, quantity in order_summary.items():
+            summary_table += f"{sku} | {quantity}\n"
+
+        return summary_table.strip(), {}
+    else:
+        return f"Order not found for the given room number", {}
+
+@swaig.endpoint(description="Finalizes the customer's order and provides a confirmation.",
+                room=SWAIGArgument(type="string", description="Customer's room number used as the order key.", required=True),
+                notes=SWAIGArgument(type="string", description="Additional instructions for the order."))
+def place_order(room, notes=""):
+    if room in orders:
+        orders[room]['status'] = 'placed'
+        orders[room]['notes'] = notes
+        completed_order = orders.pop(room)
+        completed_order['room'] = room
+        completed_orders.append(completed_order)
+        return f"Order placed successfully", {}
+    else:
+        return f"Order not found for the given room number", {}
 ```
 
 ---
@@ -335,7 +332,7 @@ def place_order(phone: str, notes: str = "") -> str:
 
 ### Interaction 1: Adding Items
 
-**User**: "I would like to order French Toast and a Coffee. My phone number is +1234567890."
+**User**: "I would like to order French Toast and a Coffee. My room number is 101."
 
 **AI Agent**:
 
@@ -345,7 +342,7 @@ def place_order(phone: str, notes: str = "") -> str:
   {
     "function": "add_items",
     "arguments": {
-      "phone": "+1234567890",
+      "room": "101",
       "skus": ["CFT001", "COF012"]
     }
   }
@@ -367,7 +364,7 @@ def place_order(phone: str, notes: str = "") -> str:
   {
     "function": "delete_items",
     "arguments": {
-      "phone": "+1234567890",
+      "room": "101",
       "skus": ["COF012"]
     }
   }
@@ -389,7 +386,7 @@ def place_order(phone: str, notes: str = "") -> str:
   {
     "function": "order_total",
     "arguments": {
-      "phone": "+1234567890"
+      "room": "101"
     }
   }
   ```
@@ -410,7 +407,7 @@ def place_order(phone: str, notes: str = "") -> str:
   {
     "function": "place_order",
     "arguments": {
-      "phone": "+1234567890",
+      "room": "101",
       "notes": "Please deliver to room 101."
     }
   }
@@ -424,7 +421,7 @@ def place_order(phone: str, notes: str = "") -> str:
 
 ## Conclusion
 
-The RoomieServe AI system is designed to enhance the room service experience by providing a seamless, AI-driven ordering process. By utilizing the customer's phone number as a unique identifier, the system efficiently manages orders, ensuring accuracy and personalized service.
+The RoomieServe AI system is designed to enhance the room service experience by providing a seamless, AI-driven ordering process. By utilizing the customer's room number as a unique identifier, the system efficiently manages orders, ensuring accuracy and personalized service.
 
 This comprehensive plan outlines the key components, function specifications, data structures, and example interactions necessary to implement RoomieServe AI using mock data. The mocked-up Python functions demonstrate how the backend operates without the need for a database, making it suitable for demonstrations and initial development phases.
 
@@ -479,13 +476,13 @@ This document is intended for informational purposes to outline the plan and spe
   "functions": [
     {
       "name": "add_items",
-      "description": "Adds items to the customer's order based on the provided SKUs and associates it with their phone number.",
+      "description": "Adds items to the customer's order based on the provided SKUs and associates it with their room number.",
       "parameters": {
         "type": "object",
         "properties": {
-          "phone": {
+          "room": {
             "type": "string",
-            "description": "Customer's phone number used as the order key."
+            "description": "Customer's room number used as the order key."
           },
           "skus": {
             "type": "array",
@@ -501,18 +498,18 @@ This document is intended for informational purposes to outline the plan and spe
             "description": "List of SKU strings to add to the order."
           }
         },
-        "required": ["phone", "skus"]
+        "required": ["room", "skus"]
       }
     },
     {
       "name": "delete_items",
-      "description": "Removes items from the customer's order based on the provided SKUs and phone number.",
+      "description": "Removes items from the customer's order based on the provided SKUs and room number.",
       "parameters": {
         "type": "object",
         "properties": {
-          "phone": {
+          "room": {
             "type": "string",
-            "description": "Customer's phone number used as the order key."
+            "description": "Customer's room number used as the order key."
           },
           "skus": {
             "type": "array",
@@ -523,7 +520,7 @@ This document is intended for informational purposes to outline the plan and spe
             "description": "List of SKU strings to remove from the order."
           }
         },
-        "required": ["phone", "skus"]
+        "required": ["room", "skus"]
       }
     },
     {
@@ -532,12 +529,12 @@ This document is intended for informational purposes to outline the plan and spe
       "parameters": {
         "type": "object",
         "properties": {
-          "phone": {
+          "room": {
             "type": "string",
-            "description": "Customer's phone number used as the order key."
+            "description": "Customer's room number used as the order key."
           }
         },
-        "required": ["phone"]
+        "required": ["room"]
       }
     },
     {
@@ -546,16 +543,16 @@ This document is intended for informational purposes to outline the plan and spe
       "parameters": {
         "type": "object",
         "properties": {
-          "phone": {
+          "room": {
             "type": "string",
-            "description": "Customer's phone number used as the order key."
+            "description": "Customer's room number used as the order key."
           },
           "notes": {
             "type": "string",
             "description": "Additional instructions for the order."
           }
         },
-        "required": ["phone"]
+        "required": ["room"]
       }
     }
   ]
