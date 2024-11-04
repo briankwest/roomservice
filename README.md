@@ -429,13 +429,13 @@ By following this plan, developers and stakeholders can understand the system's 
 
 ---
 
-**Château AI-Luxe Deployment**
+## Château AI-Luxe Deployment
 
 RoomieServe AI has been successfully deployed at Château AI-Luxe, showcasing its capabilities in a real-world hospitality environment. This deployment demonstrates the system's effectiveness in enhancing guest experiences through efficient and personalized room service management.
 
 ---
 
-**Key Highlights**
+## Key Highlights
 
 - **Dynamic Menu Integration**: Automatic updates to menu offerings based on mock data.
 - **Efficient Order Management**: Quick addition and removal of items using SKUs.
@@ -444,7 +444,7 @@ RoomieServe AI has been successfully deployed at Château AI-Luxe, showcasing it
 
 ---
 
-**Next Steps**
+## Next Steps
 
 - **Database Integration**: Transition from mock data to actual database connections for real-world applications.
 - **AI Agent Enhancement**: Improve the natural language understanding capabilities of the AI Agent for more complex interactions.
@@ -452,24 +452,24 @@ RoomieServe AI has been successfully deployed at Château AI-Luxe, showcasing it
 
 ---
 
-**Contact Information**
+## Contact Information
 
 For further information or inquiries about RoomieServe AI, please contact:
 
-- **Email**: roomserve@example.com
-- **Phone**: +100000000
+- **Email**: [sales@signalwire.com](mailto:sales@signalwire.com)
+- **Phone**: [+16503820000](tel:+16503820000)
 
 ---
 
-**Disclaimer**
+## Disclaimer
 
 This document is intended for informational purposes to outline the plan and specifications of RoomieServe AI using mock data for demonstration. The functions and data structures provided are for illustrative purposes and may require adjustments for deployment in a production environment.
 
 ---
 
-# Appendices
+## Appendices
 
-## Full OpenAI Tool Specification
+### Full OpenAI Tool Specification
 
 ```json
 {
@@ -560,5 +560,3 @@ This document is intended for informational purposes to outline the plan and spe
 ```
 
 ---
-
-**End of Document**
