@@ -10,6 +10,7 @@
    - [delete_items](#2-delete_items)
    - [order_total](#3-order_total)
    - [place_order](#4-place_order)
+   - [review_order](#5-review_order)
 5. [Data Structures](#data-structures)
    - [Menu Items](#menu-items)
    - [Orders](#orders)
@@ -160,6 +161,27 @@ The RoomieServe AI system consists of the following key components:
   ```
 
 - **Returns**: A human-readable string confirming that the order has been placed.
+
+### 5. `review_order`
+
+- **Description**: Provides a detailed review of the customer's current order, including item names, quantities, and individual prices, identified by the customer's phone number.
+- **Function Name**: `review_order`
+- **Parameters**:
+
+  ```json
+  {
+    "type": "object",
+    "properties": {
+      "phone": {
+        "type": "string",
+        "description": "Customer's phone number used as the order key."
+      }
+    },
+    "required": ["phone"]
+  }
+  ```
+
+- **Returns**: A human-readable string detailing the current items in the order, their quantities, and individual prices.
 
 ---
 
