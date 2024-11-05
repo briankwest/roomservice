@@ -1,1 +1,1 @@
-web: python app.pygit remote add origin git@github.com:briankwest/roomservice.git
+web: gunicorn -w 4 -b 0.0.0.0:$PORT app:app

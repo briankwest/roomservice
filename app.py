@@ -1,6 +1,6 @@
 from flask import Flask
 from signalwire_swaig.core import SWAIG, SWAIGArgument, SWAIGArgumentItems
-import logging
+import logging, random
 from typing import List
 from dotenv import load_dotenv
 import os
@@ -8,12 +8,17 @@ import os
 # Load environment variables from .env file
 load_dotenv()
 
+logging.getLogger('werkzeug').setLevel(logging.WARNING)
+
+if os.environ.get('DEBUG'):
+    print("Debug mode is enabled")
+    debug_pin = f"{random.randint(100, 999)}-{random.randint(100, 999)}-{random.randint(100, 999)}"
+    os.environ['WERKZEUG_DEBUG_PIN'] = debug_pin
+    logging.getLogger('werkzeug').setLevel(logging.DEBUG)
+    print(f"Debugger PIN: {debug_pin}")
+
 # Initialize Flask app
 app = Flask(__name__)
-
-# Set up logging
-log_level = 'DEBUG'
-logging.basicConfig(level=getattr(logging, log_level, logging.DEBUG))
 
 # Initialize SWAIG with the Flask app and basic authentication
 swaig = SWAIG(
