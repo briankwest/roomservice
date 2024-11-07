@@ -188,6 +188,41 @@ menu_items = [
         'description': 'Glass of red wine.',
         'price': 8.00,
         'category': 'Beverage'
+    },
+        {
+        'sku': 'RBS010-R',
+        'name': 'Ribeye Steak - Rare',
+        'description': '8 oz. steak cooked rare with mashed potatoes and seasonal vegetables.',
+        'price': 30.00,
+        'category': 'Dinner'
+    },
+    {
+        'sku': 'RBS010-MR',
+        'name': 'Ribeye Steak - Medium Rare',
+        'description': '8 oz. steak cooked medium rare with mashed potatoes and seasonal vegetables.',
+        'price': 30.00,
+        'category': 'Dinner'
+    },
+    {
+        'sku': 'RBS010-M',
+        'name': 'Ribeye Steak - Medium',
+        'description': '8 oz. steak cooked medium with mashed potatoes and seasonal vegetables.',
+        'price': 30.00,
+        'category': 'Dinner'
+    },
+    {
+        'sku': 'RBS010-MW',
+        'name': 'Ribeye Steak - Medium Well',
+        'description': '8 oz. steak cooked medium well with mashed potatoes and seasonal vegetables.',
+        'price': 30.00,
+        'category': 'Dinner'
+    },
+    {
+        'sku': 'RBS010-WD',
+        'name': 'Ribeye Steak - Well Done',
+        'description': '8 oz. steak cooked well done with mashed potatoes and seasonal vegetables.',
+        'price': 30.00,
+        'category': 'Dinner'
     }
 ]
 
@@ -235,10 +270,10 @@ def add_items(room, skus):
             )    
 def delete_items(room, skus):
     if room in orders:
-        orders[room] = [item for item in orders[room] if item['sku'] not in skus]
+        orders[room]['items'] = [item for item in orders[room]['items'] if item['sku'] not in skus]
         return f"Items removed successfully", {}
     else:
-        return f"Order not found for the given room number", {}
+        return f"Order not found for the given room number, Did you add the items first?", {}
 
 @swaig.endpoint(description="Provides a summary of the customer's order and total price.",
                 room=SWAIGArgument(type="string", description="Customer's room number used as the order key.", required=True))
@@ -262,7 +297,7 @@ def review_order(room):
 
         return summary_table.strip(), {}
     else:
-        return f"Order not found for the given room number", {}
+        return f"Order not found for the given room number, Did you add the items first?", {}
 
 @swaig.endpoint(description="Finalizes the customer's order and provides a confirmation.",
                 room=SWAIGArgument(type="string", description="Customer's room number used as the order key.", required=True),
@@ -276,7 +311,7 @@ def place_order(room, notes=""):
         completed_orders.append(completed_order)
         return f"Order placed successfully", {}
     else:
-        return f"Order not found for the given room number", {}
+        return f"Order not found for the given room number, Did you add the items first?", {}
 
 @app.route('/swaig', methods=['GET'])
 def display_detailed_orders():
