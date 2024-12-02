@@ -390,7 +390,7 @@ def display_detailed_orders():
                 <div>
                     <h2>About RoomieServe</h2>
                     <p>RoomieServe AI is an innovative room service management tool developed using SignalWire's AI Agent technology. It is designed to improve the efficiency and accuracy of room service orders in hotels and hospitals.</p>
-                    <p>Check out the full project on <a href="https://github.com/RoomieServe">GitHub</a>.</p>
+                    <p>Check out the full project on <a href="https://github.com/briankwest/roomservice">GitHub</a>.</p>
                 </div>
             </div>
             
