@@ -314,6 +314,7 @@ def place_order(room, notes=""):
         return f"Order not found for the given room number, Did you add the items first?", {}
 
 @app.route('/swaig', methods=['GET'])
+@app.route('/', methods=['GET'])
 def display_detailed_orders():
     html_content = """
     <html>
