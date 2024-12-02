@@ -17,8 +17,8 @@ if os.environ.get('DEBUG'):
     logging.getLogger('werkzeug').setLevel(logging.DEBUG)
     print(f"Debugger PIN: {debug_pin}")
 
-# Initialize Flask app
-app = Flask(__name__)
+# Initialize Flask app with static folder
+app = Flask(__name__, static_folder='static')
 
 # Initialize SWAIG with the Flask app and basic authentication
 swaig = SWAIG(
@@ -321,33 +321,91 @@ def display_detailed_orders():
     <head>
         <title>Detailed Orders Summary</title>
         <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f4f9;
+                color: #333;
+            }
+            .container {
+                width: 90%;
+                margin: 20px auto;
+                padding: 20px;
+                background-color: #fff;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                border-radius: 8px;
+            }
+            .about-section {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+            .about-section img {
+                max-width: 150px;
+                margin-right: 20px;
+                border-radius: 8px;
+            }
+            h2 {
+                color: #4a4a4a;
+                border-bottom: 2px solid #e2e2e2;
+                padding-bottom: 10px;
+            }
             table {
-                width: 80%;
+                width: 100%;
                 border-collapse: collapse;
+                margin-top: 20px;
             }
             th, td {
-                border: 1px solid black;
-                padding: 8px;
+                border: 1px solid #ddd;
+                padding: 12px;
                 text-align: left;
             }
             th {
-                background-color: #f2f2f2;
+                background-color: #f8f8f8;
+                color: #555;
+            }
+            tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
+            a {
+                color: #3498db;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            .footer {
+                margin-top: 40px;
+                text-align: center;
+                font-size: 0.9em;
+                color: #777;
             }
         </style>
     </head>
     <body>
-        <h2>Pending Orders Summary</h2>
-        <table>
-            <tr>
-                <th>Room Number</th>
-                <th>SKU</th>
-                <th>Item Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Status</th>
-            </tr>
+        <div class="container">
+            <div class="about-section">
+                <img src="/static/roomie.webp" alt="RoomieServe Logo">
+                <div>
+                    <h2>About RoomieServe</h2>
+                    <p>RoomieServe AI is an innovative room service management tool developed using SignalWire's AI Agent technology. It is designed to improve the efficiency and accuracy of room service orders in hotels and hospitals.</p>
+                    <p>Check out the full project on <a href="https://github.com/RoomieServe">GitHub</a>.</p>
+                </div>
+            </div>
+            
+            <h2>Pending Orders Summary</h2>
+            <table>
+                <tr>
+                    <th>Room Number</th>
+                    <th>SKU</th>
+                    <th>Item Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                </tr>
     """
     for room, order in orders.items():
         item_count = {}
@@ -387,19 +445,19 @@ def display_detailed_orders():
         """
     
     html_content += """
-        </table>
-        <h2>Completed Orders Summary</h2>
-        <table>
-            <tr>
-                <th>Room Number</th>
-                <th>SKU</th>
-                <th>Item Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total Price</th>
-                <th>Status</th>
-            </tr>
+            </table>
+            <h2>Completed Orders Summary</h2>
+            <table>
+                <tr>
+                    <th>Room Number</th>
+                    <th>SKU</th>
+                    <th>Item Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                </tr>
     """
     for order in completed_orders:
         room = order.get('room', 'Unknown')
@@ -440,11 +498,17 @@ def display_detailed_orders():
         """
     
     html_content += """
-        </table>
+            </table>
+        </div>
     </body>
     </html>
     """
     return html_content
+
+# Serve static files
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return app.send_static_file(filename)
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=os.getenv("PORT", 5000), debug=os.getenv("DEBUG")) 
